@@ -1,6 +1,14 @@
+var tabuleiro;
 exports.criarJogo = 
 function criarJogo(){
     var id = create_UUID();
+    tabuleiro = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
+    ];
+        
+    
     var jogador = ['X','O'];
     let indexSorteado = Math.floor(Math.random() * 2);
     var firstPlayer= jogador[indexSorteado];
@@ -9,7 +17,14 @@ function criarJogo(){
       'firstPlayer': firstPlayer
 
   };
-  console.log(json);
+  return json;
+
+
+}
+exports.movimentar =
+function movimentar(id,gameJSON ){
+   console.log(JSON.parse(gameJSON).position.x);
+  
 
 
 }
