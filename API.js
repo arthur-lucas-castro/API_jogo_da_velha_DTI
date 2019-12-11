@@ -1,165 +1,141 @@
 var tabuleiro;
 var proximoJogador;
 var Partidas={};
+
 exports.criarJogo = 
 function criarJogo(){
- 
     var id = create_UUID();
-   
     tabuleiro = [
         ["", "", ""],
         ["", "", ""],
         ["", "", ""]
     ];
-        
-   
-   
     var jogador = ['X','O'];
     let indexSorteado = Math.floor(Math.random() * 2);
     proximoJogador= jogador[indexSorteado];
-  var json ={
-      'id': id,
-      'firstPlayer': proximoJogador
-
-  };
-  Partidas[id]= tabuleiro;
- 
-console.log(Partidas);
-
-
-  return json;
-  
+    var json ={
+        'id': id,
+        'firstPlayer': proximoJogador
+    };
+    console.log(id);
+    Partidas[id]= tabuleiro;
+    return json;
 }
+
 exports.movimentar =
 function movimentar(id,jogada ){
-   /* console.log(id);
-    console.log(Partidas.indexOf(id));*/
-    var jogo_Tabuleiro;
-    var posicao;
+    var resultado;
     if(Partidas[id.id]){
-        jogo_Tabuleiro =Partidas[id.id];
-        console.log(jogo_Tabuleiro);
-        var jogada =JSON.parse(jogada);
-       
-       if(jogada.player==proximoJogador){
+        var jogada =JSON.parse(jogada);       
+        if(jogada.player==proximoJogador){
             var x= jogada.position.x;
             var y=jogada.position.y;
             if(jogada.position.y==0){
-            y=2;
-
+                y=2;
             }else if(jogada.position.y==2){
                 y=0;
             }
-           
-           
-            for(var i = 2; i>=y;i--){
-                
+            for(var i = 2; i>=y;i--){                
                 for(var j=0; j<x;j++){
-                
-                        console.log(i,j);
-                    
-                   
                 }
                 if(i==y){
                   if(Partidas[id.id][i][j]==""){
-                    console.log("entrou");
                     Partidas[id.id][i][j]=proximoJogador
-                    console.log( Partidas[id.id]);
-                    Checar_Vitoria(Partidas[id.id]);
+                   resultado=Checar_Vitoria(Partidas[id.id],proximoJogador );
                   }else{
-                      console.log("Jogada invalida");
+                    return Enviar_MSG("Invalido");
                   }
-                }
-               
-                
+                }   
             }
-
-
-            
-
-
-
-
-
-
-          
-         console.log("realizar jogada");
          if(proximoJogador=='X'){
-            console.log("Jogador X");
              proximoJogador='O';
-             console.log( proximoJogador);
+             console.log(resultado)
+             return Enviar_MSG(resultado);
          }else{
-            console.log("Jogador O");
              proximoJogador='X';
-             console.log( proximoJogador);
+             console.log(resultado)
+             return Enviar_MSG(resultado);
          }
-       }else{
-     
-      // }/
-     }
+        }else{
+            return Enviar_MSG('Turno errado');
+        }
     }else{
-        console.log("jogo nao existe");
+        return Enviar_MSG("Partida Inexistente");
     }
-  
-
-    
-
-
 }
-function Checar_Vitoria(tabuleiro){
-    console.log("checando")
-for(var i=0; i<3; i++){
-    console.log(tabuleiro[i][0]);
-    console.log(tabuleiro[i][1]);
-    console.log(tabuleiro[i][2]);
-        if(tabuleiro[i][0]==tabuleiro[i][1] && tabuleiro[i][2] == tabuleiro[i][0]){
-            console.log("Win");
-            return 1;
-        }
-    
-}
-for(var i=0; i<3; i++){
-    
-    if(tabuleiro[0][i]==tabuleiro[1][i] && tabuleiro[2][i] == tabuleiro[0][i]){
-        console.log("Win");
-        return 1;
-    }
-
-}
-if(tabuleiro[0][0]==tabuleiro[1][1] && tabuleiro[2][2] == tabuleiro[0][0]){
-    console.log("win");
-    return 1;
-}
-if(tabuleiro[2][0]==tabuleiro[1][1] && tabuleiro[0][2] == tabuleiro[1][1]){
-    console.log("win");
-    return 1;
-}
-var draw=1;
-for(var i; i <3; i++){
-    for(var j; j <3; j++){
-        if(tabuleiro[i][j]==""){
-        draw=0;
+function Checar_Vitoria(tabuleiro,jogador){
+    var draw=1;
+    for(var i=0; i<3; i++){
+        if(tabuleiro[i][0]==tabuleiro[i][1] && tabuleiro[i][2] == tabuleiro[i][0] && (tabuleiro[i][0]=='X'||tabuleiro[i][0]=='O')){
+            return jogador;
         }
     }
-}
-if(draw==1){
-    return 0;
-}else{
-    return 2;
-}
+    for(var i=0; i<3; i++){       
+        if(tabuleiro[0][i]==tabuleiro[1][i] && tabuleiro[2][i] == tabuleiro[0][i] && (tabuleiro[0][i]=='X'|| tabuleiro[0][i]=='O')){
+            return jogador;
+        }
+    }
+    if(tabuleiro[0][0]==tabuleiro[1][1] && tabuleiro[2][2] == tabuleiro[0][0] && (tabuleiro[0][0]=='X'|| tabuleiro[0][0]=='O')){
+        return jogador;
+    }
+    if(tabuleiro[2][0]==tabuleiro[1][1] && tabuleiro[0][2] == tabuleiro[1][1] && (tabuleiro[1][1]=='X'|| tabuleiro[1][1]=='O')){
+        return jogador;
+    }
+    for(var i=0; i <3; i++){
+        for(var j=0; j <3; j++){
+            if(tabuleiro[i][j]==""){
+            draw=0;
+            }
+        }
+    }
+    if(draw==1){
+        return "Draw";
+    }else{
+        return 200;
+    }
 
 }
 function Enviar_MSG(estado_do_Jogo){
-   /* if(estado_do_Jogo=='Turno errado'){
-        
-    }else if(){
-
-    }else if(){
-
-    }else(){
-
+    var json={};
+    if(estado_do_Jogo=='Turno errado'){
+        json={
+          "msg": "Não é turno do jogador"
+        }
+        return json;
+    }else if(estado_do_Jogo=="Partida Inexistente"){
+        json={
+            "msg": "Partida não encontrada"
+        }
+        return json;
+    }else if(estado_do_Jogo=="Invalido"){
+        json={
+            "msg": "Jogada Invalida"
+        }
+        return json;
+    }else if(estado_do_Jogo=='X'){
+        json={
+            "msg": "Partida finalizada",
+            "winner": "X"
+        }
+        return json;
+    }else if(estado_do_Jogo=='O'){
+        json={
+            "msg": "Partida finalizada",
+            "winner": "O"
+        }
+        return json;
+    }else if(estado_do_Jogo=="Draw"){
+        json={
+            "status": "Partida finalizada",
+            "winner": "Draw"
+        }
+        return json;   
+    }else{
+        json={
+            "msg": 200
+        }
+        return json;
     }
-*/
 }
 function create_UUID(){
     var dt = new Date().getTime();

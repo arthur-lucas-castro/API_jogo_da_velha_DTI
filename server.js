@@ -12,14 +12,17 @@ app.get('/', (req, res)=>{
 })
 app.get('/game', (req, res)=>{
  json = api.criarJogo();
+ res.sendFile(__dirname + '/index.html');
+ res.send(json);
 })
 app.get('/game/:id', (req, res)=>{
     let params;
     var parametros =  Object.keys(req.query);
 
     var id =  req.params;
-   
-    api.movimentar(id,parametros.toString());
+    res.sendFile(__dirname + '/index.html');
+    res.send(api.movimentar(id,parametros.toString()));
+
    
    })
    
