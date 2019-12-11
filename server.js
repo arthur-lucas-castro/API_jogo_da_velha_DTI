@@ -3,7 +3,7 @@ const http = require('http').createServer(app)
 const io = require('socket.io')(http)
 var api = require('./API.js');
 const url = require('url');
-var id;
+var json;
 http.listen(3000, function(){
     console.log("porta 3000");
 });
@@ -11,10 +11,7 @@ app.get('/', (req, res)=>{
     res.sendFile(__dirname + '/index.html');
 })
 app.get('/game', (req, res)=>{
-    
-    
- console.log(api.criarJogo().id);
- id = api.criarJogo().id;
+ json = api.criarJogo();
 })
 app.get('/game/:id', (req, res)=>{
     let params;
@@ -22,7 +19,6 @@ app.get('/game/:id', (req, res)=>{
 
     var id =  req.params;
    
-    params = new URLSearchParams('id=50');
     api.movimentar(id,parametros.toString());
    
    })
